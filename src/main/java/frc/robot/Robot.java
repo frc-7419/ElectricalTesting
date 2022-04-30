@@ -1,69 +1,57 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+/**
+ * Phoenix Software License Agreement
+ *
+ * Copyright (C) Cross The Road Electronics.  All rights
+ * reserved.
+ * 
+ * Cross The Road Electronics (CTRE) licenses to you the right to 
+ * use, publish, and distribute copies of CRF (Cross The Road) firmware files (*.crf) and 
+ * Phoenix Software API Libraries ONLY when in use with CTR Electronics hardware products.
+ * 
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+ * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+ * CROSS THE ROAD ELECTRONICS BE LIABLE FOR ANY INCIDENTAL, SPECIAL, 
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+ * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+ * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+ * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+ * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+ * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE
+ */
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * Description:
+ * Example plays music through a single Talon FX by playing a single tone every loop.
+ * This example does NOT require a chirp music file. 
+ * See the Orchestra example for playing a MIDI file through multiple TalonFXs.
+ * 
+ * Supported Version:
+ * 	- Talon FX: 20.2.3.0 or newer
  */
+package frc.robot;
+
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.wpilibj.TimedRobot;
+
 public class Robot extends TimedRobot {
 
-  private final TalonSRX talon1 = new TalonSRX(50);
-  private final VictorSPX victor1 = new VictorSPX(40);
-  private final VictorSPX victor2 = new VictorSPX(16);
-
-  private final XboxController joystick = new XboxController(0);
-  
-  @Override
-  public void robotInit() {}
-
-  @Override
-  public void robotPeriodic() {}
-
-  @Override
-  public void autonomousInit() {}
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void teleopInit() {}
+  FurElise _music = new FurElise();
+  WPI_TalonFX _talonFX = new WPI_TalonFX(62);
 
   @Override
   public void teleopPeriodic() {
-    talon1.set(ControlMode.PercentOutput, joystick.getRightY());
-    victor1.set(ControlMode.PercentOutput, joystick.getRightY());
-    victor2.set(ControlMode.PercentOutput, joystick.getLeftY());
+
+    /* how much time per loop? */
+    int dt = 20; // 20ms per loop
+
+    /* what note to play during this 20ms slice? */
+    double freq = _music.GetMusicFrequency(dt);
+
+    /* update the FX. If the freq is 0, no-note is played */
+    _talonFX.set(TalonFXControlMode.MusicTone, freq);
   }
-
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void testInit() {}
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void simulationInit() {}
-
-  @Override
-  public void simulationPeriodic() {}
 }
