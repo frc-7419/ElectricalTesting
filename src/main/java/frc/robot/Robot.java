@@ -1,57 +1,82 @@
-/**
- * Phoenix Software License Agreement
- *
- * Copyright (C) Cross The Road Electronics.  All rights
- * reserved.
- * 
- * Cross The Road Electronics (CTRE) licenses to you the right to 
- * use, publish, and distribute copies of CRF (Cross The Road) firmware files (*.crf) and 
- * Phoenix Software API Libraries ONLY when in use with CTR Electronics hardware products.
- * 
- * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
- * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
- * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
- * CROSS THE ROAD ELECTRONICS BE LIABLE FOR ANY INCIDENTAL, SPECIAL, 
- * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
- * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
- * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
- * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
- * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
- * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE
- */
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
-/**
- * Description:
- * Example plays music through a single Talon FX by playing a single tone every loop.
- * This example does NOT require a chirp music file. 
- * See the Orchestra example for playing a MIDI file through multiple TalonFXs.
- * 
- * Supported Version:
- * 	- Talon FX: 20.2.3.0 or newer
- */
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.led.RainbowAnimation;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
-  FurElise _music = new FurElise();
-  WPI_TalonFX _talonFX = new WPI_TalonFX(62);
+  private RobotContainer robotContainer;
+
+  // private AddressableLED led = new AddressableLED(0);
+  // private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(60);
+  // private int rainbowFirstPixelHue = 0;
+
+  @Override
+  public void robotInit() {
+    robotContainer = new RobotContainer();
+    // CameraServer.startAutomaticCapture();
+  }
+
+  
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
+
+
+  @Override
+  public void disabledInit() {
+  }
+
+  @Override
+  public void disabledPeriodic() {
+    // led.setLength(ledBuffer.getLength());
+    // for (var i = 0; i < ledBuffer.getLength(); i++) {
+    //   final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
+    //   // Set the HSV value to led
+    //   ledBuffer.setHSV(i, hue, 255, 128);
+    // }
+    // rainbowFirstPixelHue += 3;
+    // rainbowFirstPixelHue %= 180;
+  }
+
+  @Override
+  public void autonomousInit() {
+    robotContainer.getAutonomousCommand().schedule();
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+  }
+  
+  @Override
+  public void teleopInit() {
+    robotContainer.getAutonomousCommand().cancel();
+    robotContainer.setDefaultCommands();
+  }
 
   @Override
   public void teleopPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
-    /* how much time per loop? */
-    int dt = 20; // 20ms per loop
+  @Override
+  public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-    /* what note to play during this 20ms slice? */
-    double freq = _music.GetMusicFrequency(dt);
-
-    /* update the FX. If the freq is 0, no-note is played */
-    _talonFX.set(TalonFXControlMode.MusicTone, freq);
+  @Override
+  public void testPeriodic() {
   }
 }
