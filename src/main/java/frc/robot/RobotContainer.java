@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.team7419.joystick.DoubleButton;
-import com.team7419.music.Music;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -9,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.PlayTones;
+import frc.robot.commands.PlaySongsWithJoystick;
 import frc.robot.commands.RunIntakeAndLoaderWithJoystick;
 import frc.robot.subsystems.arms.ArmsSubsystem;
 import frc.robot.subsystems.arms.CoastArms;
@@ -60,8 +59,7 @@ public class RobotContainer {
   // private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
 
-  private final PlayTones furElise = new PlayTones(Music.furElise, driveBaseSubsystem, elevatorSubsystem, shooterSubsystem);
-  private final PlayTones rickroll = new PlayTones(Music.rickroll, driveBaseSubsystem, elevatorSubsystem, shooterSubsystem);
+  private final PlaySongsWithJoystick playSongsWithJoystick = new PlaySongsWithJoystick(joystick1, driveBaseSubsystem, shooterSubsystem, elevatorSubsystem);
 
   // private final RunIntakeAndLoaderWithJoystick runIntakeAndLoaderWithJoystick = new RunIntakeAndLoaderWithJoystick(joystick1, intakeSubsystem, loaderSubsystem);
   // private final DeployIntakeWithJoystick deployIntakeWithJoystick = new DeployIntakeWithJoystick(intakeSolenoidSubsystem, joystick2);
@@ -89,11 +87,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    new JoystickButton(joystick1, XboxController.Button.kA.value)
-      .whileHeld(furElise);
-    
-    new JoystickButton(joystick1, XboxController.Button.kB.value)
-      .whenHeld(rickroll);
     // // align turret
     // new JoystickButton(joystick2, XboxController.Button.kLeftBumper.value)
     //   .whileHeld(new AlignTurretDefault(turretSubsystem, limelightSubsystem));
@@ -150,6 +143,10 @@ public class RobotContainer {
   }
 
   public void setDefaultCommands() {
+    driveBaseSubsystem.setDefaultCommand(playSongsWithJoystick);
+    elevatorSubsystem.setDefaultCommand(playSongsWithJoystick);
+    shooterSubsystem.setDefaultCommand(playSongsWithJoystick);
+
     // driveBaseSubsystem.setDefaultCommand(arcadeDrive);
     // intakeSolenoidSubsystem.setDefaultCommand(deployIntakeWithJoystick);
     // intakeSubsystem.setDefaultCommand(runIntakeAndLoaderWithJoystick);
